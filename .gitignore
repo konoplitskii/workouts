@@ -1,0 +1,32 @@
+# Ignore node_modules directory
+node_modules/
+
+# OS generated files #
+######################
+.DS_Store
+Thumbs.db
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# Build files #
+##############
+build/
+dist/
+*.min.js
+*.min.css
+
+# Dependency directories #
+##########################
+bower_components/
+jspm_packages/
+
+# Misc #
+#######
+.env
+.cache
+.idea/
+.vscode/
