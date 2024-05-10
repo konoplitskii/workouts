@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {useWorkoutsContext} from '../hooks/useWorkoutsContext.js';
+import { useAuthContext } from '../hooks/useAuthContext.js';
 
 const WorkoutForm = () => {
     const [title, setTitle] = useState('');
@@ -7,37 +8,44 @@ const WorkoutForm = () => {
     const [reps, setReps] = useState('');
     const [error, setError] = useState('');
     const { workouts, dispatch } = useWorkoutsContext();
+    const { user } = useAuthContext();
 
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const workout = {
-          title,
-          reps,
-          load,
-      }
-      const response = await fetch('http://localhost:5555/api/workouts', {
-          method: 'POST',
-          body: JSON.stringify(workout),
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      });
-      const json = await response.json();
-      if (!response.ok) {
-        setError(json.error);
-      }
-      if(response.ok) {
-          setError(null);
-          setTitle('');
-          setLoad('');
-          setReps('');
-          dispatch({
-              type: 'CREATE_WORKOUT',
-              payload: json,
-          })
-          console.log('new workout add', json)
-      }
+
+        if(!user) {
+            setError('You must be logged in');
+        }
+
+        const workout = {
+            title,
+            reps,
+            load,
+        }
+        const response = await fetch('http://localhost:5555/api/workouts', {
+            method: 'POST',
+            body: JSON.stringify(workout),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`,
+            }
+        });
+        const json = await response.json();
+        if (!response.ok) {
+            setError(json.error);
+        }
+        if(response.ok) {
+            setError(null);
+            setTitle('');
+            setLoad('');
+            setReps('');
+            dispatch({
+                type: 'CREATE_WORKOUT',
+                payload: json,
+            })
+            console.log('new workout add', json)
+        }
     }
 
 

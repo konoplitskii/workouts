@@ -2,15 +2,17 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const workoutsRotes = require('./routes/workouts');
+const userRotes = require('./routes/user');
 const cors = require('cors');
 const app = express();
 
 //middleware
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 
 // api
 app.use('/api', workoutsRotes);
+app.use('/api', userRotes);
 
 //connect
 mongoose.connect(process.env.DATABASE_URL)
@@ -21,7 +23,7 @@ mongoose.connect(process.env.DATABASE_URL)
         })
     })
     .catch(error => {
-        console.log('DB error', error)
+        console.log('DB error', error);
     })
 
 

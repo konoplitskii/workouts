@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 
 const getAllWorkouts = async (req, res) => {
     try {
-        const workouts = await WorkoutModel.find({}).sort({createdAt: -1});
+        const user_id = req.user._id;
+        const workouts = await WorkoutModel.find({ user_id }).sort({createdAt: -1});
         res.status(200).json(workouts);
     } catch (e) {
-
+        res.status(404).json({error: 'No such workouts'});
     }
 }
 
@@ -47,10 +48,12 @@ const createWorkout = async (req, res) => {
     }
 
     try {
+        const user_id = req.user._id;
         const workout = await WorkoutModel.create({
             title,
             load,
-            reps
+            reps,
+            user_id,
         });
         res.status(200).json(workout);
     } catch (error) {
@@ -59,7 +62,6 @@ const createWorkout = async (req, res) => {
 }
 
 const deleteWorkout = async (req, res) => {
-    console.log('ss')
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
